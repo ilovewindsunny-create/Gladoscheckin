@@ -3,7 +3,7 @@ name: auto check
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
     paths-ignore:
       - 'README.md'
       - 'imgs/'
@@ -12,19 +12,23 @@ on:
   watch:
     types: started
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   build:
     name: glados checkin
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: ["3.11"]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: set up python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -47,9 +51,11 @@ jobs:
 
     - name: keep alive
       uses: liskin/gh-workflow-keepalive@v1 # using the workflow with default settings
+      continue-on-error: true
       
     - name: delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
+      continue-on-error: true
       with:
         token: ${{ github.token }}
         repository: ${{ github.repository }}
