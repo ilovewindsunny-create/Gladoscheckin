@@ -146,7 +146,10 @@ def checkin_and_process(cookie: str, exchange_plan: str, account_index: int) -> 
     if "Checkin! Got" in message:
         result["status"] = "success"
         result["status_text"] = f"check-in succeeded, got {points_gained} point(s)"
-    elif "Checkin Repeats!" in message:
+    elif (
+        "Checkin Repeats!" in message
+        or "Today's observation logged. Return tomorrow for more points." in message
+    ):
         result["status"] = "repeat"
         result["status_text"] = "already checked in today"
         result["points_gained"] = 0
